@@ -19,8 +19,23 @@
     {% endblock %}
   </head>
   <body>
-    {% block body %}
+    <header>
+      <nav>
+        <ul>
+          <li>
+            <a href="{{ path('homepage') }}">Accueil</a>
+          </li>
+          <li>
+            <a href="{{ path('about') }}">À propos</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      {% block body %}
 
-    {% endblock %}
+      {% endblock %}
+    </main>
+    <footer>HB News - 2025</footer>
   </body>
 </html>
