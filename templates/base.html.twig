@@ -20,8 +20,9 @@
   </head>
   <body>
     <header>
-      <nav>
-        <ul>
+      <nav class="flex px-4 py-2 justify-between bg-gray-800 text-white items-center">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="size-8" />
+        <ul class="flex gap-4">
           <li>
             <a href="{{ path('homepage') }}">Accueil</a>
           </li>
@@ -31,7 +32,7 @@
         </ul>
       </nav>
     </header>
-    <main>
+    <main class="max-w-[900px] mx-auto">
       {% block body %}
 
       {% endblock %}
