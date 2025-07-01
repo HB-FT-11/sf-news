@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Hello ArticleController!
+{% endblock %}
+
+{% block body %}
+  <div class="max-w-[900px] mx-auto">
+    <h1 class="text-center my-6 text-4xl">Articles</h1>
+    <div>
+      {% for article in articles %}
+        <div>
+          <h2 class="text-2xl">{{ article.title }}</h2>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
