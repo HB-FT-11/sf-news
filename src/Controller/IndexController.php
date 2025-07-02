@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\NewsletterSubscriber;
+use App\Form\NewsletterForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -24,5 +27,27 @@ final class IndexController extends AbstractController
     public function about(): Response
     {
         return $this->render('index/about.html.twig');
+    }
+
+    #[Route('/newsletter/subscribe', name: 'newsletter_subscribe')]
+    public function newsletterSubscribe(Request $request): Response
+    {
+        // Je crée une instance d'un inscrit
+        $newsletterSubscriber = new NewsletterSubscriber();
+        // Je crée un formulaire de newsletter et j'y relie l'instance
+        $newsletterForm = $this->createForm(NewsletterForm::class, $newsletterSubscriber);
+
+        // Je passe les données de la requête au formulaire
+        // pour qu'il détermine s'il doit traiter les données POST ou non
+        $newsletterForm->handleRequest($request);
+
+        if ($newsletterForm->isSubmitted() && $newsletterForm->isValid()) {
+            // Persister l'entité
+            // Flush
+        }
+
+        return $this->render('index/newsletter_subscribe.html.twig', [
+            'newsletter_form' => $newsletterForm
+        ]);
     }
 }
