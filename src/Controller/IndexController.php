@@ -4,12 +4,11 @@ namespace App\Controller;
 
 use App\Entity\NewsletterSubscriber;
 use App\Form\NewsletterForm;
+use App\Mail\NewsletterSubscribedConfirmation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class IndexController extends AbstractController
@@ -36,7 +35,7 @@ final class IndexController extends AbstractController
     public function newsletterSubscribe(
         Request $request,
         EntityManagerInterface $em, // Dépendance : em = Entity Manager = Gestionnaire d'entités
-        MailerInterface $mailer
+        NewsletterSubscribedConfirmation $confirmationService
     ): Response {
         // Je crée une instance d'un inscrit
         $newsletterSubscriber = new NewsletterSubscriber();
@@ -54,14 +53,7 @@ final class IndexController extends AbstractController
             $this->addFlash('success', "Votre inscription a bien été prise en compte");
 
             // Envoyer un email à l'utilisateur
-            $email = (new Email())
-                ->from('admin@hbcorp.com')
-                ->to($newsletterSubscriber->getEmail())
-                ->subject('Merci pour votre inscription !')
-                ->text('Votre inscription à la newsletter SF News a bien été prise en compte, merci !')
-                ->html('<p>Votre inscription à la newsletter SF News a bien été prise en compte, merci !</p>');
-
-            $mailer->send($email);
+            $confirmationService->send($newsletterSubscriber);
 
             return $this->redirectToRoute('homepage');
         }
