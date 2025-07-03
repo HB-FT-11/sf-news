@@ -47,6 +47,12 @@ final class IndexController extends AbstractController
         if ($newsletterForm->isSubmitted() && $newsletterForm->isValid()) {
             $em->persist($newsletterSubscriber);
             $em->flush();
+
+            $this->addFlash('success', "Votre inscription a bien été prise en compte");
+
+            // Envoyer un email à l'utilisateur
+
+            return $this->redirectToRoute('homepage');
         }
 
         return $this->render('index/newsletter_subscribe.html.twig', [
