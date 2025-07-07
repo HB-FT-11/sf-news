@@ -8,14 +8,16 @@ use Symfony\Component\Mime\Email;
 
 class NewsletterSubscribedConfirmation
 {
-    public function __construct(private MailerInterface $mailer)
-    {
+    public function __construct(
+        private MailerInterface $mailer,
+        private string $adminEmail
+    ) {
     }
 
     public function send(NewsletterSubscriber $newSubscriber): void
     {
         $email = (new Email())
-            ->from('admin@hbcorp.com')
+            ->from($this->adminEmail)
             ->to($newSubscriber->getEmail())
             ->subject('Merci pour votre inscription !')
             ->text('Votre inscription à la newsletter SF News a bien été prise en compte, merci !')
