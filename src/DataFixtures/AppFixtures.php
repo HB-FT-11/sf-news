@@ -4,14 +4,21 @@ namespace App\DataFixtures;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private const NB_CATEGORIES = 8;
     private const NB_ARTICLES = 90;
+
+    public function __construct(
+        private UserPasswordHasherInterface $hasher
+    ) {
+    }
 
     public function load(ObjectManager $manager): void
     {
@@ -27,6 +34,22 @@ class AppFixtures extends Fixture
             $manager->persist($category);
             $categories[] = $category;
         }
+
+        // --- USERS
+        $regularUser = new User();
+        $regularUser
+            ->setEmail('regular@user.com')
+            ->setPassword($this->hasher->hashPassword($regularUser, 'test'));
+
+        $manager->persist($regularUser);
+
+        $adminUser = new User();
+        $adminUser
+            ->setEmail('admin@user.com')
+            ->setRoles(['ROLE_ADMIN'])
+            ->setPassword($this->hasher->hashPassword($adminUser, 'admin'));
+
+        $manager->persist($adminUser);
 
         // --- ARTICLES
         for ($i = 0; $i < self::NB_ARTICLES; $i++) {
