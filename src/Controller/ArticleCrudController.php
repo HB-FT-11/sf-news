@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/article/crud')]
+#[Route('/admin/article/crud')]
 final class ArticleCrudController extends AbstractController
 {
     #[Route(name: 'app_article_crud_index', methods: ['GET'])]
