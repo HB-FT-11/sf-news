@@ -15,7 +15,7 @@ final class ArticleController extends AbstractController
     public function list(ArticleRepository $articleRepository): Response
     {
         // Demander les données à la BDD
-        $articles = $articleRepository->findAll();
+        $articles = $articleRepository->findRecentArticlesWithCategory();
 
         // Rendre la vue en lui passant les données
         return $this->render('article/list.html.twig', [
