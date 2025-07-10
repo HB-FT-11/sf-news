@@ -29,3 +29,11 @@ services:
     # App\Mail\NewsletterSubscribedConfirmation:
     #     arguments:
     #         $adminEmail: "%app.admin_email%"
+
+    App\EventListener\AddMyCorpHeaderListener:
+        tags:
+            - {
+                name: kernel.event_listener,
+                event: kernel.response,
+                method: 'addHeader'
+            }
