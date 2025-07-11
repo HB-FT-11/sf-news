@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\ApiToken;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\User;
@@ -57,6 +58,12 @@ class AppFixtures extends Fixture
 
             $manager->persist($article); // L'enregistrement n'est pas encore créé
         }
+
+        // --- API TOKENS
+        $token = new ApiToken();
+        $token->setToken("7NRtFw5HRBztWKcn93eoDQiG3zZTw8lzP5lrBkRoTnzuc1e1EKvEMhtOlnCsU2");
+
+        $manager->persist($token);
 
         $manager->flush(); // L'enregistrement est inséré à ce niveau-là
     }
