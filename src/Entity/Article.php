@@ -7,7 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Context;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article
@@ -27,6 +29,7 @@ class Article
 
     #[ORM\Column]
     #[Groups("articles:read")]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'd/m/Y'])]
     private ?\DateTime $createdAt = null;
 
     #[ORM\Column]
