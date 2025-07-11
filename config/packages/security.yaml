@@ -20,7 +20,9 @@ security:
 
         api:
             pattern: /api/articles
+            stateless: true
             provider: api_token_provider
+            custom_authenticator: App\Security\ApiTokenAuthenticator
 
         main:
             lazy: true
@@ -44,7 +46,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/articles, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
