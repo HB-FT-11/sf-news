@@ -7,9 +7,11 @@ use App\Form\NewsletterForm;
 use App\Mail\NewsletterSubscribedConfirmation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class IndexController extends AbstractController
 {
@@ -35,7 +37,8 @@ final class IndexController extends AbstractController
     public function newsletterSubscribe(
         Request $request,
         EntityManagerInterface $em, // Dépendance : em = Entity Manager = Gestionnaire d'entités
-        NewsletterSubscribedConfirmation $confirmationService
+        NewsletterSubscribedConfirmation $confirmationService,
+        HttpClientInterface $client
     ): Response {
         // Je crée une instance d'un inscrit
         $newsletterSubscriber = new NewsletterSubscriber();
@@ -47,15 +50,25 @@ final class IndexController extends AbstractController
         $newsletterForm->handleRequest($request);
 
         if ($newsletterForm->isSubmitted() && $newsletterForm->isValid()) {
-            $em->persist($newsletterSubscriber);
-            $em->flush();
+            // Vérifier que l'email n'est pas un spam
+            $response = $client->request('POST', 'http://localhost:8001/api/check', [
+                'json' => ['email' => $newsletterSubscriber->getEmail()]
+            ]);
+            $data = $response->toArray();
 
-            $this->addFlash('success', "Votre inscription a bien été prise en compte");
+            if ($data['result'] === 'spam') {
+                $newsletterForm->addError(new FormError("Une erreur est survenue lors de la vérification de l'email"));
+            } else {
+                $em->persist($newsletterSubscriber);
+                $em->flush();
 
-            // Envoyer un email à l'utilisateur
-            $confirmationService->send($newsletterSubscriber);
+                $this->addFlash('success', "Votre inscription a bien été prise en compte");
 
-            return $this->redirectToRoute('homepage');
+                // Envoyer un email à l'utilisateur
+                $confirmationService->send($newsletterSubscriber);
+
+                return $this->redirectToRoute('homepage');
+            }
         }
 
         return $this->render('index/newsletter_subscribe.html.twig', [
