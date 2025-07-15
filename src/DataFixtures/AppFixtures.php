@@ -30,12 +30,15 @@ class AppFixtures extends Fixture
         }
 
         // --- USERS
+        $users = [];
+
         $regularUser = new User();
         $regularUser
             ->setEmail('regular@user.com')
             ->setPassword('test');
 
         $manager->persist($regularUser);
+        $users[] = $regularUser;
 
         $adminUser = new User();
         $adminUser
@@ -44,6 +47,7 @@ class AppFixtures extends Fixture
             ->setPassword('admin');
 
         $manager->persist($adminUser);
+        $users[] = $adminUser;
 
         // --- ARTICLES
         for ($i = 0; $i < self::NB_ARTICLES; $i++) {
@@ -54,7 +58,8 @@ class AppFixtures extends Fixture
                 ->setContent($faker->realTextBetween(300, 800))
                 ->setCreatedAt($faker->dateTimeBetween('-2 years'))
                 ->setVisible($faker->boolean(80))
-                ->setCategory($faker->randomElement($categories));
+                ->setCategory($faker->randomElement($categories))
+                ->setAuthor($faker->randomElement($users));
 
             $manager->persist($article); // L'enregistrement n'est pas encore créé
         }

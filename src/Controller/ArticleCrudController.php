@@ -5,13 +5,14 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Form\ArticleForm;
 use App\Repository\ArticleRepository;
+use App\Security\Voter\ArticleVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/admin/article/crud')]
+#[Route('/article/crud')]
 final class ArticleCrudController extends AbstractController
 {
     #[Route(name: 'app_article_crud_index', methods: ['GET'])]
@@ -53,6 +54,8 @@ final class ArticleCrudController extends AbstractController
     #[Route('/{id}/edit', name: 'app_article_crud_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted(ArticleVoter::EDIT, $article);
+
         $form = $this->createForm(ArticleForm::class, $article);
         $form->handleRequest($request);
 
